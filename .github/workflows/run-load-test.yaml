@@ -1,0 +1,34 @@
+name: Setup and run load test
+
+on:
+  workflow_dispatch:
+    inputs:
+      scenario:
+        description: The desired description like "scenario-simple"
+        required: true
+        type: string
+
+env:
+  K8S_NAMESPACE: k6-load-test
+  JOB_NAME: k6
+
+jobs:
+  setup-and-run-load-test:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: 'read'
+      id-token: 'write'
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+      - name: Google auth
+        uses: 'google-github-actions/auth@v2'
+        with:
+          credentials_json: ${{ secrets.AUTOMATION_SA_KEY_JSON }}
+      - id: get-credentials
+        uses: 'google-github-actions/get-gke-credentials@v2'
+        with:
+          cluster_name: ${{ secrets.GKE_CLUSTER_NAME }}
+          location: ${{ secrets.GKE_CLUSTER_LOCATION }}
+      - id: Test kubectl
+        run: kubectl get pods

@@ -1,0 +1,12 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+namespace: k6-load-test
+
+resources:
+  - ../base
+
+configMapGenerator:
+  - name: k6-load-scripts
+    files:
+      - load-script.js
