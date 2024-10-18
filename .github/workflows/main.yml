@@ -81,8 +81,9 @@ jobs:
           BASTION_IP: ${{ secrets.SSH_BASTION_HOST_IP }}
           SSH_PRIVATE_KEY: ${{ secrets.LPT_SSH_PRIVATE_KEY }}
         run: |
-          touch /tmp/lpt_priv_key
-          echo "$SSH_PRIVATE_KEY" > /tmp/lpt_priv_key
-          ssh -D 1080 -qfN -i ./lpt_priv_key lpt@$BASTION_IP 
+          touch ~/.ssh/lpt_priv_key
+          echo "$SSH_PRIVATE_KEY" > ~/.ssh/lpt_priv_key
+          chmod 600 ~/.ssh/lpt_priv_key
+          ssh -D 1080 -qfN -i ~/.ssh/lpt_priv_key lpt@$BASTION_IP 
           export HTTPS_PROXY=socks5://localhost:1080
           kubectl apply -f src/k8s/deployment.yaml
