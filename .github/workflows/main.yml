@@ -22,7 +22,8 @@ jobs:
         uses: gradle/actions/setup-gradle@v3
       - name: Setup pack
         uses: buildpacks/github-actions/setup-pack@v5.0.0
-      - name: Build with Gradle
+      - name: Build with Gradle chr
+
         run: ./gradlew build
       - name: Build Docker image with pack
         run: |
@@ -80,7 +81,8 @@ jobs:
           BASTION_IP: ${{ secrets.SSH_BASTION_HOST_IP }}
           SSH_PRIVATE_KEY: ${{ secrets.LPT_SSH_PRIVATE_KEY }}
         run: |
-          echo "$SSH_PRIVATE_KEY" > ./lpt_priv_key
+          touch /tmp/lpt_priv_key
+          echo "$SSH_PRIVATE_KEY" > /tmp/lpt_priv_key
           ssh -D 1080 -qfN -i ./lpt_priv_key lpt@$BASTION_IP 
           export HTTPS_PROXY=socks5://localhost:1080
           kubectl apply -f src/k8s/deployment.yaml
