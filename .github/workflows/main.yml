@@ -84,6 +84,6 @@ jobs:
         env:
           BASTION_IP: ${{ secrets.SSH_BASTION_HOST_IP }}
         run: |
-          ssh -D 1080 -qfN lpt@$BASTION_IP 
+          ssh -D 1080 -qN lpt@$BASTION_IP 
           export HTTPS_PROXY=socks5://localhost:1080
           kubectl apply -f src/k8s/deployment.yaml
