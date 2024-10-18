@@ -82,7 +82,7 @@ jobs:
           SSH_PRIVATE_KEY: ${{ secrets.LPT_SSH_PRIVATE_KEY }}
         run: |
           echo "$SSH_PRIVATE_KEY" > /tmp/lpt_priv_key
-          chmod 600/tmp/lpt_priv_key
+          chmod 600 /tmp/lpt_priv_key
           ssh -D 1080 -qfN -i /tmp/lpt_priv_key lpt@$BASTION_IP 
           export HTTPS_PROXY=socks5://localhost:1080
           kubectl apply -f src/k8s/deployment.yaml
