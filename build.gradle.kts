@@ -6,11 +6,11 @@ plugins {
 }
 
 group = "com.senacor.lpt"
-version = "0.0.1-SNAPSHOT"
+version = "0.0.2"
 
 java {
 	toolchain {
-		languageVersion = JavaLanguageVersion.of(17)
+		languageVersion = JavaLanguageVersion.of(19)
 	}
 }
 

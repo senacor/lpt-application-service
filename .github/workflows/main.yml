@@ -19,17 +19,12 @@ jobs:
         with:
           java-version: '17'
           distribution: 'adopt'
-
-#      # TODO: What is this step doing anyway?
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v3
-
-      - name: Build with Gradle
-        run: ./gradlew build
-
       - name: Setup pack
         uses: buildpacks/github-actions/setup-pack@v5.0.0
-
+      - name: Build with Gradle
+        run: ./gradlew build
       - name: Build Docker image with pack
         run: |
           pack build tmp --builder gcr.io/buildpacks/builder --env GOOGLE_RUNTIME_VERSION=17
@@ -58,10 +53,8 @@ jobs:
           echo $IMAGE_NAME
           echo "IMAGE_NAME=$DOCKER_IMAGE_PREFIX/$PROJECT_NAME:$PROJECT_VERSION" >> $GITHUB_ENV
         env:
-          # TODO: replace with external variables
-          DOCKER_IMAGE_PREFIX: europe-west1-docker.pkg.dev/vbdev-436712/lpt
-
-      - name: Push to GAR
+          DOCKER_IMAGE_PREFIX: ${{ vars.DOCKER_IMAGE_PATH_PREFIX }}
+      - name: Push image to GAR
         run: |
           docker tag tmp $IMAGE_NAME
           docker push $IMAGE_NAME
@@ -76,6 +69,7 @@ jobs:
         uses: 'google-github-actions/auth@v2'
         with:
           credentials_json: ${{ secrets.AUTOMATION_SA_KEY_JSON }}
+      - uses: azure/setup-kubectl@v4
       - name: Get GKE creds
         uses: 'google-github-actions/get-gke-credentials@v2'
         with:
@@ -83,8 +77,11 @@ jobs:
           location: 'europe-west1'
           credentials: ${{ secrets.AUTOMATION_SA_KEY_JSON }}
       - name: Apply deployment
-        uses: actions-hub/kubectl@master
         env:
-          KUBE_CONFIG: ${{ secrets.AUTOMATION_SA_KEY_JSON }}
-        with:
-          args: apply -f src/k8s/deployment.yml
+          BASTION_IP: ${{ secrets.SSH_BASTION_HOST_IP }}
+          SSH_PRIVATE_KEY: ${{ secrets.LPT_SSH_PRIVATE_KEY }}
+        run: |
+          echo "$SSH_PRIVATE_KEY" > ./lpt_priv_key
+          ssh -D 1080 -qfN -i ./lpt_priv_key lpt@$BASTION_IP 
+          export HTTPS_PROXY=socks5://localhost:1080
+          kubectl apply -f src/k8s/deployment.yaml
