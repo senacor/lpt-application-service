@@ -85,7 +85,7 @@ jobs:
           BASTION_IP: ${{ secrets.SSH_BASTION_HOST_IP }}
         run: |
           # ssh -D 1080 -qN lpt@$BASTION_IP
-          ssh -o ExitOnForwardFailure=yes -f -D 1080 lpt@$BASTION_IP sleep 10
+          ssh -o ExitOnForwardFailure=yes -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -f -D 1080 lpt@$BASTION_IP sleep 10
 
           export HTTPS_PROXY=socks5://localhost:1080
           kubectl apply -f src/k8s/deployment.yaml
