@@ -1,0 +1,36 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: k6
+  labels:
+    app.kubernetes.io/job: k6
+spec:
+  ttlSecondsAfterFinished: 60
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/job: k6
+    spec:
+      containers:
+        - name: k6
+          image: grafana/k6
+          command: ["/bin/sh", "-c"]
+          args:
+            - |
+              k6 run /scripts/load-script.js
+          volumeMounts:
+            - mountPath: /scripts
+              name: scripts
+          resources:
+            requests:
+              cpu: 100m
+              memory: 512Mi
+            limits:
+              cpu: 100m
+              memory: 512Mi
+      volumes:
+        - name: scripts
+          configMap:
+            name: k6-load-scripts
+      restartPolicy: Never
+  backoffLimit: 4
