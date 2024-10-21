@@ -71,6 +71,7 @@ jobs:
           credentials_json: ${{ secrets.AUTOMATION_SA_KEY_JSON }}
       - uses: azure/setup-kubectl@v4
       - name: Get GKE creds
+        id: get_gke_creds
         uses: 'google-github-actions/get-gke-credentials@v2'
         with:
           cluster_name: 'simple-autopilot-private-cluster'
@@ -86,9 +87,12 @@ jobs:
           API_URL: ${{ vars.KUBE_INTERNAL_API_URL }}
           CLUSTER_NAME: ${{ vars.KUBE_CLUSTER_NAME }}
           KUBE_FLAGS: ${{ vars.KUBE_FLAGS }}
+          CONFIG_PATH: ${{ steps.get_gke_creds.outputs.kubeconfig_path }}
+
         run: |
           ssh -o ExitOnForwardFailure=yes -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -L 6443:$API_URL -i lpt lpt@$BASTION_IP -fN 
-          kubectl config get-contexts $CLUSTER_NAME
+          # use config from gke init action:
+          export KUBECONFIG=$CONFIG_PATH
           kubectl config set-cluster $CLUSTER_NAME --server=https://127.0.0.1:6443
           kubectl version $KUBE_FLAGS
           kubectl apply -f src/k8s/deployment.yaml $KUBE_FLAGS
