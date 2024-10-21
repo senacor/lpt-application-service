@@ -88,14 +88,7 @@ jobs:
           KUBE_FLAGS: ${{ vars.KUBE_FLAGS }}
         run: |
           ssh -o ExitOnForwardFailure=yes -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -L 6443:$API_URL -i lpt lpt@$BASTION_IP -fN 
-          # kubectl config set-cluster $CLUSTER_NAME --server=https://127.0.0.1:6443
-          
-          # So is it context name or cluster name?
           kubectl config get-contexts $CLUSTER_NAME
           kubectl config set-cluster $CLUSTER_NAME --server=https://127.0.0.1:6443
-          
-          kubectl config get-contexts simple-autopilot-private-cluster
-          kubectl config set-cluster simple-autopilot-private-cluster --server=https://127.0.0.1:6443
-          
           kubectl version $KUBE_FLAGS
           kubectl apply -f src/k8s/deployment.yaml $KUBE_FLAGS
