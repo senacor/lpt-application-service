@@ -4,9 +4,11 @@ on:
   workflow_dispatch:
     inputs:
       scenario:
-        description: The desired description like "scenario-simple"
+        description: The desired scenario of the load test run
         required: true
-        type: string
+        type: choice
+        options:
+          - scenario-simple
 
 env:
   K8S_NAMESPACE: k6-load-test
@@ -48,7 +50,21 @@ jobs:
           # use config from gke init action:
           export KUBECONFIG=$CONFIG_PATH
           kubectl config set-cluster $CLUSTER_NAME --server=https://127.0.0.1:6443
-          kubectl get namespace $KUBE_FLAGS
+          kubectl apply -f load-test/base/namespace.yaml $KUBE_FLAGS
+          sleep 5
+          kubectl apply -k load-test/${{ inputs.scenario }} $KUBE_FLAGS
+      - name: Run scenario and get logs
+        env:
+          BASTION_IP: ${{ secrets.SSH_BASTION_HOST_IP }}
+          API_URL: ${{ vars.KUBE_INTERNAL_API_URL }}
+          CLUSTER_NAME: ${{ vars.KUBE_CLUSTER_NAME }}
+          KUBE_FLAGS: ${{ vars.KUBE_FLAGS }}
+          CONFIG_PATH: ${{ steps.get_gke_creds.outputs.kubeconfig_path }}
+        run: |
+          export KUBECONFIG=$CONFIG_PATH
+          kubectl $KUBE_FLAGS --namespace $K8S_NAMESPACE wait --for=condition=Ready pod --selector "app.kubernetes.io/job=$JOB_NAME" --timeout=180s
+          kubectl $KUBE_FLAGS --namespace $K8S_NAMESPACE logs "job/$JOB_NAME" --follow
+          kubectl $KUBE_FLAGS --namespace $K8S_NAMESPACE wait --for=condition=complete --timeout=180s "job/$JOB_NAME"
       - name: Cleanup
         if: ${{ always() }}
         env:
@@ -59,11 +75,4 @@ jobs:
           CONFIG_PATH: ${{ steps.get_gke_creds.outputs.kubeconfig_path }}
         run: |
           export KUBECONFIG=$CONFIG_PATH
-          kubectl delete namespace k6-load-test $KUBE_FLAGS
-#      - name: Create namespace
-#        run: |
-#          kubectl apply -f load-test/base/namespace.yaml
-#          sleep 5
-#      - name: Deploy k6 test job
-#        run: |
-#          kubectl apply -k load-test/${{ inputs.scenario }}
+          kubectl delete namespace $K8S_NAMESPACE $KUBE_FLAGS
