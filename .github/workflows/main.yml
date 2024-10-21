@@ -94,7 +94,6 @@ jobs:
           # use config from gke init action:
           export KUBECONFIG=$CONFIG_PATH
           kubectl config set-cluster $CLUSTER_NAME --server=https://127.0.0.1:6443
-          kubectl config set-cluster simple-autopilot-private-cluster --server=https://127.0.0.1:6443
-          kubectl config view
+          # kubectl config view
           kubectl version $KUBE_FLAGS
           kubectl apply -f src/k8s/deployment.yaml $KUBE_FLAGS
