@@ -9,8 +9,8 @@ import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 
 @RestController
-@RequestMapping("/api/credit-application")
-class CreditApplicationController {
+@RequestMapping("/api/credit-applications")
+class CreditApplicationsController {
 
     @PostMapping
     fun evaluateCreditApplication(@RequestBody request: CreditApplicationRequest): CreditDecision {
