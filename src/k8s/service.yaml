@@ -5,6 +5,7 @@ metadata:
   annotations:
     # https://cloud.google.com/kubernetes-engine/docs/how-to/container-native-load-balancing
     cloud.google.com/neg: '{"ingress": true}'
+    cloud.google.com/backend-config: '{"default": "lpt-backend-config"}'
   labels:
     app: creditapplication-service
 spec:
