@@ -1,12 +1,8 @@
-package com.senacor.lpt.service.creditapplication.domain
+package com.senacor.lpt.service.creditapplication
 
 import java.math.BigDecimal
 
-/*
- * Kreditantrag
- */
-class CreditApplication(
-    val id: String,
+class CreditApplicationRequest(
     val creditAmount: BigDecimal,
     val firstName: String,
     val lastName: String,

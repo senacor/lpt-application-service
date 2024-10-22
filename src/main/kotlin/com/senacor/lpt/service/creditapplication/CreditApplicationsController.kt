@@ -1,7 +1,5 @@
-package com.senacor.lpt.service.creditapplication.controller
+package com.senacor.lpt.service.creditapplication
 
-import com.senacor.lpt.service.creditapplication.domain.CreditDecision
-import com.senacor.lpt.service.creditapplication.domain.CreditDecisionType
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
