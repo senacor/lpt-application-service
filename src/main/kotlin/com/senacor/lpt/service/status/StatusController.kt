@@ -1,6 +1,6 @@
 package com.senacor.lpt.service.status
 
-import org.springframework.http.ResponseEntity
+import org.springframework.http.ResponseEntity.ok
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
@@ -9,5 +9,5 @@ import org.springframework.web.bind.annotation.RestController
 @RequestMapping("/status")
 class StatusController {
     @GetMapping
-    fun status() = ResponseEntity.noContent().build<Void>()
+    fun status() = ok(null)
 }
