@@ -1,4 +1,4 @@
-name: Build and push to GAR
+name: Build and deploy to dev environment
 
 on:
   workflow_dispatch:
@@ -22,8 +22,7 @@ jobs:
         uses: gradle/actions/setup-gradle@v3
       - name: Setup pack
         uses: buildpacks/github-actions/setup-pack@v5.0.0
-      - name: Build with Gradle chr
-
+      - name: Build service artifact
         run: ./gradlew build
       - name: Build Docker image with pack
         run: |
