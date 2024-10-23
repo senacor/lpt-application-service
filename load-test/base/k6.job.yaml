@@ -18,6 +18,9 @@ spec:
           args:
             - |
               k6 run /scripts/load-script.js
+          envFrom:
+            - configMapRef:
+                name: k6-env
           volumeMounts:
             - mountPath: /scripts
               name: scripts

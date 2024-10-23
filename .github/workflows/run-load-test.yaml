@@ -8,7 +8,18 @@ on:
         required: true
         type: choice
         options:
-          - scenario-simple
+          - scenario-simple-traffic-internal
+          - scenario-traffic-external
+      virtual-users:
+        description: The virtual users used to run the load test
+        required: false
+        type: number
+        default: 10
+      test-duration:
+        description: The duration the test should run, e.g.'30s'
+        required: false
+        type: string
+        default: '30s'
 
 env:
   K8S_NAMESPACE: k6-load-test
@@ -52,6 +63,8 @@ jobs:
           kubectl config set-cluster $CLUSTER_NAME --server=https://127.0.0.1:6443
           kubectl apply -f load-test/base/namespace.yaml $KUBE_FLAGS
           sleep 5
+          echo "VIRTUAL_USERS=${{ inputs.virtual-users }}" >> load-test/base/.env
+          echo "TEST_DURATION=${{ inputs.test-duration }}" >> load-test/base/.env
           kubectl apply -k load-test/${{ inputs.scenario }} $KUBE_FLAGS
       - name: Run scenario and get logs
         env:
