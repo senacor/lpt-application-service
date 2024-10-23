@@ -1,0 +1,15 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: creditapplication-ingress
+  annotations:
+    kubernetes.io/ingress.class: "gce"
+    kubernetes.io/ingress.global-static-ip-name: "creditapplication-service-public-ip"
+    cloud.google.com/neg: '{"exposed-service": {"ingress": true}}'
+    # cert-manager.io/cluster-issuer: "letsencrypt-prod"
+spec:
+  defaultBackend:
+    service:
+      name: creditapplication-k8s-service
+      port:
+        number: 8080

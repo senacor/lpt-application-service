@@ -6,7 +6,7 @@ plugins {
 }
 
 group = "com.senacor.lpt"
-version = "0.0.2"
+version = "0.0.3"
 
 java {
 	toolchain {
@@ -20,6 +20,7 @@ repositories {
 
 dependencies {
 	implementation("org.springframework.boot:spring-boot-starter-webflux")
+	implementation("org.springframework.boot:spring-boot-starter-actuator")
 	implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
 	implementation("org.jetbrains.kotlin:kotlin-reflect")
 	testImplementation("org.springframework.boot:spring-boot-starter-test")

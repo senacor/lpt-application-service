@@ -17,7 +17,7 @@ spec:
       serviceAccountName: creditapplication-service-sa
       containers:
         - name: creditapplication-service
-          image: europe-west1-docker.pkg.dev/vbdev-436712/lpt/creditapplication-service:0.0.2
+          image: europe-west1-docker.pkg.dev/vbdev-436712/lpt/creditapplication-service:0.0.3
           ports:
             - containerPort: 8080
           resources:
@@ -25,3 +25,13 @@ spec:
               cpu: "1000m"
             limits:
               cpu: "1000m"
+          readinessProbe:
+            httpGet:
+              path: /actuator/health
+              port: 8080
+              scheme: HTTP
+            initialDelaySeconds: 15
+            timeoutSeconds: 5
+            periodSeconds: 10
+            successThreshold: 1
+            failureThreshold: 5

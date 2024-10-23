@@ -1,4 +1,4 @@
-package com.senacor.lpt.service.creditapplication.domain
+package com.senacor.lpt.service.creditapplication
 
 class CreditDecision(
     val decision: CreditDecisionType

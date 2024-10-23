@@ -1,7 +1,5 @@
-package com.senacor.lpt.service.creditapplication.controller
+package com.senacor.lpt.service.creditapplication
 
-import com.senacor.lpt.service.creditapplication.domain.CreditDecision
-import com.senacor.lpt.service.creditapplication.domain.CreditDecisionType
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
@@ -9,8 +7,8 @@ import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 
 @RestController
-@RequestMapping("/api/credit-application")
-class CreditApplicationController {
+@RequestMapping("/api/credit-applications")
+class CreditApplicationsController {
 
     @PostMapping
     fun evaluateCreditApplication(@RequestBody request: CreditApplicationRequest): CreditDecision {
