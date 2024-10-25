@@ -4,9 +4,9 @@ import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.runApplication
 
 @SpringBootApplication
-class CreditApplication
+class CreditApplicationServiceApp
 
 fun main(args: Array<String>) {
-	runApplication<CreditApplication>(*args)
+	runApplication<CreditApplicationServiceApp>(*args)
 }
 
