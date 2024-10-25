@@ -1,4 +1,4 @@
-package com.senacor.lpt.service
+package com.senacor.lpt.service.creditapplication
 
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.runApplication
