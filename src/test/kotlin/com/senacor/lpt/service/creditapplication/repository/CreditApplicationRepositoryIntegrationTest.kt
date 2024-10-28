@@ -14,7 +14,6 @@ import java.util.UUID
 
 @SpringBootTest
 @ContextConfiguration(classes = [FirestoreIntegrationTestsConfiguration::class])
-@EnableReactiveFirestoreRepositories
 class CreditApplicationRepositoryIntegrationTest {
 
     @Autowired

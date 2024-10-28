@@ -27,13 +27,6 @@ dependencies {
 	implementation("com.google.cloud:spring-cloud-gcp-starter-data-firestore")
 	implementation("com.google.cloud:spring-cloud-gcp-data-firestore")
 	implementation("com.google.cloud:spring-cloud-gcp-autoconfigure")
-	implementation("com.google.cloud:google-cloud-firestore")
-
-	/*
-//	com.google.cloud:spring-cloud-gcp-dependencies
-	com.google.cloud:spring-cloud-gcp-data-firestore
-	com.google.cloud:spring-cloud-gcp-autoconfigure
-	 */
 
 	implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
 	implementation("org.jetbrains.kotlin:kotlin-reflect")
