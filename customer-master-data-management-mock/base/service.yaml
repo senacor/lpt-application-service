@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: customer-master-data-management-service
+  labels:
+    app: customer-master-data-management-service
+spec:
+  type: ClusterIP
+  selector:
+    app: customer-master-data-management-service
+  ports:
+    - protocol: TCP
+      port: 9021
+      targetPort: 9021
