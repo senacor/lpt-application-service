@@ -6,11 +6,18 @@ on:
     branches:
       - main
 
+permissions:
+  actions: read
+  contents: read
 jobs:
   build:
     runs-on: ubuntu-latest
 
     steps:
+      - name: Eco-CI Init
+        uses: green-coding-berlin/eco-ci-energy-estimation@main
+        with:
+          task: start-measurement
       - name: Checkout code
         uses: actions/checkout@v2
       - name: Setup JDK 19
@@ -57,6 +64,15 @@ jobs:
         run: |
           docker tag tmp $IMAGE_NAME
           docker push $IMAGE_NAME
+      - name: Build Job Measurement
+        uses: green-coding-solutions/eco-ci-energy-estimation@v4
+        with:
+          task: get-measurement
+          label: 'build job checkout'
+      - name: Show Energy Results
+        uses: green-coding-solutions/eco-ci-energy-estimation@v4
+        with:
+          task: display-results
 
   deploy:
     runs-on: ubuntu-latest
