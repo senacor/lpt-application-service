@@ -1,6 +1,5 @@
 package com.senacor.lpt.service.creditapplication.repository
 
-import com.google.cloud.spring.data.firestore.repository.config.EnableReactiveFirestoreRepositories
 import com.senacor.lpt.service.creditapplication.CreditApplication
 import com.senacor.lpt.service.creditapplication.fromFirestoreModel
 import com.senacor.lpt.service.creditapplication.toFirestoreModel
@@ -8,12 +7,12 @@ import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
-import org.springframework.test.context.ContextConfiguration
+import org.springframework.test.context.ActiveProfiles
 import java.math.BigDecimal
 import java.util.UUID
 
 @SpringBootTest
-@ContextConfiguration(classes = [FirestoreIntegrationTestsConfiguration::class])
+@ActiveProfiles("test")
 class CreditApplicationRepositoryIntegrationTest {
 
     @Autowired

@@ -6,13 +6,10 @@ import com.google.auth.oauth2.GoogleCredentials
 import com.google.cloud.spring.core.DefaultGcpProjectIdProvider
 import com.google.cloud.spring.data.firestore.FirestoreTemplate
 import com.google.cloud.spring.data.firestore.mapping.FirestoreClassMapper
-import com.google.cloud.spring.data.firestore.mapping.FirestoreDefaultClassMapper
 import com.google.cloud.spring.data.firestore.mapping.FirestoreMappingContext
 import com.google.cloud.spring.data.firestore.repository.config.EnableReactiveFirestoreRepositories
 import com.google.firestore.v1.FirestoreGrpc
-import io.grpc.CallCredentials
 import io.grpc.ClientInterceptor
-import io.grpc.ManagedChannel
 import io.grpc.ManagedChannelBuilder
 import io.grpc.Metadata
 import io.grpc.auth.MoreCallCredentials
@@ -22,14 +19,11 @@ import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
-import org.springframework.context.annotation.PropertySource
-import java.io.IOException
 
 @Configuration
-@PropertySource("classpath:application-test.properties")
 @EnableReactiveFirestoreRepositories(basePackageClasses = [CreditApplicationRepository::class])
-class FirestoreIntegrationTestsConfiguration @Autowired constructor(
-    @param:Value("\${test.integration.firestore.database-id}") var databaseId: String
+class FirestoreConfiguration @Autowired constructor(
+    @param:Value("\${firestore.database-id}") var databaseId: String
 ) {
     val projectId: String = DefaultGcpProjectIdProvider().projectId
 
@@ -41,11 +35,10 @@ class FirestoreIntegrationTestsConfiguration @Autowired constructor(
         classMapper: FirestoreClassMapper,
         firestoreMappingContext: FirestoreMappingContext
     ) = FirestoreTemplate(
-        firestoreStub, this.parentResource, classMapper, firestoreMappingContext
+        firestoreStub, parentResource, classMapper, firestoreMappingContext
     )
 
     @Bean
-    @Throws(IOException::class)
     fun firestoreStub(firestoreRoutingHeadersInterceptor: ClientInterceptor): FirestoreGrpc.FirestoreStub {
         val credentials = GoogleCredentials.getApplicationDefault()
         val callCredentials = MoreCallCredentials.from(credentials)
@@ -72,14 +65,8 @@ class FirestoreIntegrationTestsConfiguration @Autowired constructor(
         return MetadataUtils.newAttachHeadersInterceptor(routingHeader)
     }
 
-    @Bean
-    @ConditionalOnMissingBean
-    fun getClassMapper(mappingContext: FirestoreMappingContext) = FirestoreDefaultClassMapper(mappingContext)
-
-    @Bean
-    fun firestoreMappingContext() = FirestoreMappingContext()
-
     companion object {
-        private val PERCENT_ESCAPER = PercentEscaper("._-~")
+        private val PERCENT_ESCAPER = PercentEscaper("_-")
     }
+
 }
