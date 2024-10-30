@@ -31,16 +31,9 @@ import java.io.IOException
 class FirestoreIntegrationTestsConfiguration @Autowired constructor(
     @param:Value("\${test.integration.firestore.database-id}") var databaseId: String
 ) {
-    lateinit var defaultParent: String
-
     val projectId: String = DefaultGcpProjectIdProvider().projectId
 
-    init {
-        this.defaultParent = String.format(
-            "projects/%s/databases/%s/documents", this.projectId,
-            databaseId
-        )
-    }
+    val parentResource = "projects/$projectId/databases/$databaseId/documents"
 
     @Bean
     fun firestoreTemplate(
@@ -48,38 +41,33 @@ class FirestoreIntegrationTestsConfiguration @Autowired constructor(
         classMapper: FirestoreClassMapper,
         firestoreMappingContext: FirestoreMappingContext
     ) = FirestoreTemplate(
-        firestoreStub, this.defaultParent, classMapper, firestoreMappingContext
+        firestoreStub, this.parentResource, classMapper, firestoreMappingContext
     )
 
     @Bean
     @Throws(IOException::class)
     fun firestoreStub(firestoreRoutingHeadersInterceptor: ClientInterceptor): FirestoreGrpc.FirestoreStub {
-        val credentials: GoogleCredentials = GoogleCredentials.getApplicationDefault()
-        val callCredentials: CallCredentials = MoreCallCredentials.from(credentials)
+        val credentials = GoogleCredentials.getApplicationDefault()
+        val callCredentials = MoreCallCredentials.from(credentials)
 
-        // Create a channel
-        val channel: ManagedChannel =
-            ManagedChannelBuilder.forTarget("dns:///firestore.googleapis.com:443")
-                .intercept(firestoreRoutingHeadersInterceptor)
-                .build()
-        return FirestoreGrpc.newStub(channel).withCallCredentials(callCredentials)
+        val managedChannel = ManagedChannelBuilder.forTarget("dns:///firestore.googleapis.com:443")
+            .intercept(firestoreRoutingHeadersInterceptor)
+            .build()
+        return FirestoreGrpc.newStub(managedChannel).withCallCredentials(callCredentials)
     }
 
     @Bean
     @ConditionalOnMissingBean(name = ["firestoreRoutingHeadersInterceptor"])
     fun firestoreRoutingHeadersInterceptor(): ClientInterceptor {
-        // add routing header for custom database id
-        val routingHeader = Metadata()
-        if (projectId != null && databaseId != null) {
-            val key =
-                Metadata.Key.of(Headers.DYNAMIC_ROUTING_HEADER_KEY, Metadata.ASCII_STRING_MARSHALLER)
-            routingHeader.put(
-                key,
-                ("project_id="
-                        + PERCENT_ESCAPER.escape(projectId)
-                        + "&database_id="
-                        + PERCENT_ESCAPER.escape(databaseId))
-            )
+        val routingHeaderKey = Metadata.Key.of(Headers.DYNAMIC_ROUTING_HEADER_KEY, Metadata.ASCII_STRING_MARSHALLER)
+        val routingHeaderValue = String.format(
+            "project_id=%s&database_id=%s",
+            PERCENT_ESCAPER.escape(projectId),
+            PERCENT_ESCAPER.escape(databaseId)
+        )
+
+        val routingHeader = Metadata().apply {
+            put(routingHeaderKey, routingHeaderValue)
         }
         return MetadataUtils.newAttachHeadersInterceptor(routingHeader)
     }
