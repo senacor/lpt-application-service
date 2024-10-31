@@ -1,0 +1,94 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: customer-master-data-management-deployment
+  labels:
+    app: customer-master-data-management
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: customer-master-data-management
+  template:
+    metadata:
+      labels:
+        app: customer-master-data-management
+    spec:
+      serviceAccountName: customer-master-data-management-sa
+      containers:
+        - name: customer-master-data-management
+          image: wiremock/wiremock:3.8.0
+          ports:
+            - containerPort: 9021
+              protocol: TCP
+          args:
+            - "--port=9021"
+            - "--max-request-journal=1000"
+            - "--local-response-templating"
+            - "--root-dir=/home/wiremock/storage"
+          resources:
+            requests:
+              cpu: 100m
+              memory: "128Mi"
+            limits:
+              cpu: 100m
+              memory: "128Mi"
+          readinessProbe:
+            httpGet:
+              path: /__admin/health
+              port: 9021
+              scheme: HTTP
+            initialDelaySeconds: 15
+            timeoutSeconds: 5
+            periodSeconds: 10
+            successThreshold: 1
+            failureThreshold: 5
+          volumeMounts:
+            - mountPath: /home/wiremock/storage/mappings
+              name: mappings-data
+            - mountPath: /home/wiremock/storage/__files
+              name: responses-data
+      initContainers:
+        - name: copy-mappings
+          image: bash:5
+          imagePullPolicy: Always
+          command: [ "bash", "-c", "cp  -rf /data/mappings /home/wiremock/storage/mappings" ]
+          volumeMounts:
+            - mountPath: /data/mappings
+              name: mappings-volume
+            - mountPath: /home/wiremock/storage/mappings
+              name: mappings-data
+          resources:
+            requests:
+              cpu: 100m
+              memory: "128Mi"
+            limits:
+              cpu: 100m
+              memory: "128Mi"
+        - name: copy-responses
+          image: bash:5
+          imagePullPolicy: Always
+          command: [ "bash", "-c", "cp  -rf /data/responses /home/wiremock/storage/__files" ]
+          volumeMounts:
+            - mountPath: /data/responses
+              name: responses-volume
+            - mountPath: /home/wiremock/storage/__files
+              name: responses-data
+          resources:
+            requests:
+              cpu: 100m
+              memory: "128Mi"
+            limits:
+              cpu: 100m
+              memory: "128Mi"
+      volumes:
+        - name: mappings-data
+          emptyDir: { }
+        - name: responses-data
+          emptyDir: { }
+        - name: mappings-volume
+          configMap:
+            name: mappings-config
+        - name: responses-volume
+          configMap:
+            name: responses-config
