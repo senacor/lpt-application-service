@@ -1,0 +1,66 @@
+name: Setup customer master data mock
+
+on:
+  workflow_dispatch:
+    inputs:
+      mock-settings:
+        description: The mock settings for the wiremock configuration
+        required: true
+        type: choice
+        options:
+          - random-delay
+
+env:
+  K8S_NAMESPACE: customer-master-data
+  KUSTOMIZE_BASE_DIRECTORY: customer-master-data-management-mock
+
+jobs:
+  setup-mock:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: 'read'
+      id-token: 'write'
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+      - name: Google auth
+        uses: 'google-github-actions/auth@v2'
+        with:
+          credentials_json: ${{ secrets.AUTOMATION_SA_KEY_JSON }}
+      - name: Get GKE creds
+        id: get_gke_creds
+        uses: 'google-github-actions/get-gke-credentials@v2'
+        with:
+          cluster_name: 'simple-autopilot-private-cluster'
+          location: 'europe-west1'
+          credentials: ${{ secrets.AUTOMATION_SA_KEY_JSON }}
+      - uses: webfactory/ssh-agent@v0.9.0
+        with:
+          ssh-private-key: |
+            ${{ secrets.LPT_SSH_PRIVATE_KEY }}
+      - name: Setup mock environment
+        env:
+          BASTION_IP: ${{ secrets.SSH_BASTION_HOST_IP }}
+          API_URL: ${{ vars.KUBE_INTERNAL_API_URL }}
+          CLUSTER_NAME: ${{ vars.KUBE_CLUSTER_NAME }}
+          KUBE_FLAGS: ${{ vars.KUBE_FLAGS }}
+          CONFIG_PATH: ${{ steps.get_gke_creds.outputs.kubeconfig_path }}
+        run: |
+          ssh -o ExitOnForwardFailure=yes -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -L 6443:$API_URL -i lpt lpt@$BASTION_IP -fN 
+          # use config from gke init action:
+          export KUBECONFIG=$CONFIG_PATH
+          kubectl config set-cluster $CLUSTER_NAME --server=https://127.0.0.1:6443
+          kubectl apply -f $KUSTOMIZE_BASE_DIRECTORY/base/namespace.yaml $KUBE_FLAGS
+          sleep 5
+          kubectl apply -k $KUSTOMIZE_BASE_DIRECTORY/${{ inputs.mock-settings }} $KUBE_FLAGS
+      - name: Cleanup
+        if: ${{ always() }}
+        env:
+          BASTION_IP: ${{ secrets.SSH_BASTION_HOST_IP }}
+          API_URL: ${{ vars.KUBE_INTERNAL_API_URL }}
+          CLUSTER_NAME: ${{ vars.KUBE_CLUSTER_NAME }}
+          KUBE_FLAGS: ${{ vars.KUBE_FLAGS }}
+          CONFIG_PATH: ${{ steps.get_gke_creds.outputs.kubeconfig_path }}
+        run: |
+          export KUBECONFIG=$CONFIG_PATH
+          kubectl delete namespace $K8S_NAMESPACE $KUBE_FLAGS
