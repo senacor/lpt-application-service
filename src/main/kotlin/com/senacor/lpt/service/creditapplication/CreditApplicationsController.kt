@@ -20,7 +20,6 @@ class CreditApplicationsController(
 
     var logger: Logger = getLogger(CreditApplicationsController::class.java)
 
-
     @PostMapping
     fun evaluateCreditApplication(@RequestBody request: CreditApplicationRequest): Mono<CreditDecision> {
         return customerMasterDataClient.selectCustomerById("12983719")
@@ -28,10 +27,11 @@ class CreditApplicationsController(
                 // TODO: put fancy credit application evaluation logic here...
                 CreditDecision(CreditDecisionType.APPROVED)
             }
-            .also {
+            .doOnNext {
                 // TODO: add a proper application/domain layer instead of just talking to a repo
                 val creditApplication = request.toDomain()
-                // Quick test to check whether we can write into the repo
+                    .copy(creditDecision = it.decision)
+                // TODO: to block or not to block? :thinking_face:
                 creditApplicationRepository.save(toFirestoreModel(creditApplication))
             }
     }

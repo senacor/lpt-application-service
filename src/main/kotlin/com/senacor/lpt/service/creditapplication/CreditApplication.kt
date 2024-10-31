@@ -7,7 +7,7 @@ import java.math.BigDecimal
 import java.math.RoundingMode
 
 @Document(collectionName = "credit_applications")
-class CreditApplication(
+data class CreditApplication(
     @DocumentId
     val id: String,
     val creditAmount: BigDecimal,
@@ -16,7 +16,8 @@ class CreditApplication(
     val zipCode: String,
     val occupation: String,
     val monthlyNetIncome: BigDecimal,
-    val monthlyExpenses: BigDecimal
+    val monthlyExpenses: BigDecimal,
+    val creditDecision: CreditDecisionType
 )
 
 fun toFirestoreModel(value: CreditApplication) =
