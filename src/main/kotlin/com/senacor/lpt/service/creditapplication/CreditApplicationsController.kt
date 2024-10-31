@@ -1,7 +1,7 @@
 package com.senacor.lpt.service.creditapplication
 
 import com.senacor.lpt.service.creditapplication.repository.CreditApplicationRepository
-import com.senacor.lpt.service.customer.master.data.adapter.CustomerMasterDataClient
+import com.senacor.lpt.service.creditapplication.customer.master.data.adapter.CustomerMasterDataClient
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory.getLogger
 import org.springframework.web.bind.annotation.PathVariable

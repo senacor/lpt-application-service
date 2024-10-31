@@ -1,4 +1,4 @@
-package com.senacor.lpt.service.customer.master.data.adapter
+package com.senacor.lpt.service.creditapplication.customer.master.data.adapter
 
 import java.time.LocalDate
 
