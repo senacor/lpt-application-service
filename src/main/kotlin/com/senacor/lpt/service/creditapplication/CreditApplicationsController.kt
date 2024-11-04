@@ -1,7 +1,7 @@
 package com.senacor.lpt.service.creditapplication
 
-import com.senacor.lpt.service.creditapplication.repository.CreditApplicationRepository
 import com.senacor.lpt.service.creditapplication.customer.master.data.adapter.CustomerMasterDataClient
+import com.senacor.lpt.service.creditapplication.repository.CreditApplicationRepository
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory.getLogger
 import org.springframework.web.bind.annotation.PathVariable
@@ -27,12 +27,13 @@ class CreditApplicationsController(
                 // TODO: put fancy credit application evaluation logic here...
                 CreditDecision(CreditDecisionType.APPROVED)
             }
-            .doOnNext {
+            .flatMap { creditDecision ->
                 // TODO: add a proper application/domain layer instead of just talking to a repo
                 val creditApplication = request.toDomain()
-                    .copy(creditDecision = it.decision)
-                // TODO: to block or not to block? :thinking_face:
+                    .copy(creditDecision = creditDecision.decision)
+
                 creditApplicationRepository.save(toFirestoreModel(creditApplication))
+                    .map { creditDecision }
             }
     }
 

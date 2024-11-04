@@ -17,7 +17,7 @@ data class CreditApplication(
     val occupation: String,
     val monthlyNetIncome: BigDecimal,
     val monthlyExpenses: BigDecimal,
-    val creditDecision: CreditDecisionType
+    val creditDecision: CreditDecisionType? = null,
 )
 
 fun toFirestoreModel(value: CreditApplication) =
@@ -30,6 +30,7 @@ fun toFirestoreModel(value: CreditApplication) =
         occupation = value.occupation,
         monthlyNetIncomeInCents = toCents(value.monthlyNetIncome),
         monthlyExpensesInCents = toCents(value.monthlyExpenses),
+        creditDecision = value.creditDecision
     )
 
 fun fromFirestoreModel(value: CreditApplicationFirestoreModel) =
@@ -42,6 +43,7 @@ fun fromFirestoreModel(value: CreditApplicationFirestoreModel) =
         occupation = value.occupation!!,
         monthlyNetIncome = fromCents(value.monthlyNetIncomeInCents!!),
         monthlyExpenses = fromCents(value.monthlyExpensesInCents!!),
+        creditDecision = value.creditDecision
     )
 
 private fun toCents(value: BigDecimal) = value.times(BigDecimal(100)).toLong()
