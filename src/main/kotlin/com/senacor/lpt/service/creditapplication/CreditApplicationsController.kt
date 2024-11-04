@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 import reactor.core.publisher.Mono
+import java.util.*
 
 @RestController
 @RequestMapping("/api/credit-applications")
@@ -21,11 +22,11 @@ class CreditApplicationsController(
     var logger: Logger = getLogger(CreditApplicationsController::class.java)
 
     @PostMapping
-    fun evaluateCreditApplication(@RequestBody request: CreditApplicationRequest): Mono<CreditDecision> {
+    fun evaluateCreditApplication(@RequestBody request: CreditApplicationRequest): Mono<CreditApplicationResponse> {
         return customerMasterDataClient.selectCustomerById("12983719")
             .map {
                 // TODO: put fancy credit application evaluation logic here...
-                CreditDecision(CreditDecisionType.APPROVED)
+                CreditApplicationResponse(CreditDecision(CreditDecisionType.APPROVED), UUID.randomUUID())
             }
             .flatMap { creditDecision ->
                 // TODO: add a proper application/domain layer instead of just talking to a repo
@@ -37,7 +38,7 @@ class CreditApplicationsController(
             }
     }
 
-    @PostMapping("/{id}/accept")
+    @PostMapping("/{id}")
     fun acceptCreditApplication(@PathVariable id: String) {
         // TODO: accept credit and create credit agreement
     }

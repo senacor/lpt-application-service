@@ -8,7 +8,7 @@ on:
         required: true
         type: choice
         options:
-          - scenario-simple
+          - scenario-user-flow
 
 env:
   K8S_NAMESPACE: k6-load-test
