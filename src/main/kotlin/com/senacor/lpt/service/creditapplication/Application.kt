@@ -1,12 +1,11 @@
-package com.senacor.lpt.service
+package com.senacor.lpt.service.creditapplication
 
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.runApplication
 
 @SpringBootApplication
-class CreditApplication
+class Application
 
 fun main(args: Array<String>) {
-	runApplication<CreditApplication>(*args)
+	runApplication<Application>(*args)
 }
-

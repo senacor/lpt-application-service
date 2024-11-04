@@ -1,4 +1,4 @@
-package com.senacor.lpt.service.customer.master.data.adapter
+package com.senacor.lpt.service.creditapplication.customer.master.data.adapter
 
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Bean
