@@ -11,7 +11,7 @@ import org.springframework.web.service.invoker.HttpServiceProxyFactory
 class CustomerMasterDataClientConfig {
     @Bean
     fun customerMasterDataClient(builder: WebClient.Builder,
-                                 @Value("client.customer-master-data.url") baseUrl: String): CustomerMasterDataClient {
+                                 @Value("\${client.customer-master-data.url}") baseUrl: String): CustomerMasterDataClient {
         val webClient = builder.baseUrl(baseUrl).build()
         return HttpServiceProxyFactory.builderFor(WebClientAdapter.create(webClient)).build()
             .createClient(CustomerMasterDataClient::class.java)
