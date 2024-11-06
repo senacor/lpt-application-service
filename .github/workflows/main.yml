@@ -22,6 +22,10 @@ jobs:
         uses: gradle/actions/setup-gradle@v3
       - name: Setup pack
         uses: buildpacks/github-actions/setup-pack@v5.0.0
+      - name: Google auth
+        uses: 'google-github-actions/auth@v2'
+        with:
+          credentials_json: ${{ secrets.AUTOMATION_SA_KEY_JSON }}
       - name: Build service artifact
         run: ./gradlew build
       - name: Build Docker image with pack
@@ -31,11 +35,6 @@ jobs:
       # TODO: evaluate if we need these
           PACK_NO_COLOR: true  # Optional: disable color output
           DOCKER_BUILDKIT: 1   # Optional: enable BuildKit for better performance
-
-      - name: Google auth
-        uses: 'google-github-actions/auth@v2'
-        with:
-          credentials_json: ${{ secrets.AUTOMATION_SA_KEY_JSON }}
 
       - name: Docker login
         uses: docker/login-action@v3
