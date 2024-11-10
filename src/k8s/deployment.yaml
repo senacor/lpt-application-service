@@ -17,11 +17,9 @@ spec:
       serviceAccountName: creditapplication-service-sa
       containers:
         - name: creditapplication-service
-          image: europe-west1-docker.pkg.dev/vbdev-436712/lpt/creditapplication-service:0.0.5
+          image: europe-west1-docker.pkg.dev/vbdev-436712/lpt/creditapplication-service:TO_REPLACED
           ports:
             - containerPort: 8080
-          args:
-            - "-Dspring.config.additional-location=/config/application.yaml"
           resources:
             requests:
               cpu: "1000m"
