@@ -11,6 +11,10 @@ resources:
   - serviceaccount.yaml
   - backend-config.yaml
 
+images:
+  - name: europe-west1-docker.pkg.dev/vbdev-436712/lpt/creditapplication-service
+    newTag: "$IMAGE_TAG_TO_DEPLOY"
+
 configMapGenerator:
   - name: application-config
     files:
