@@ -1,6 +1,7 @@
 package com.senacor.lpt.service.creditapplication.repository
 
 import com.senacor.lpt.service.creditapplication.CreditApplication
+import com.senacor.lpt.service.creditapplication.CreditDecisionType
 import com.senacor.lpt.service.creditapplication.fromFirestoreModel
 import com.senacor.lpt.service.creditapplication.toFirestoreModel
 import org.assertj.core.api.Assertions.assertThat
@@ -29,7 +30,8 @@ class CreditApplicationRepositoryIntegrationTest {
             "12345",
             "Arbeiter",
             BigDecimal("3000.00"),
-            BigDecimal("2500.00")
+            BigDecimal("2500.00"),
+            CreditDecisionType.PENDING
         )
 
         repository.save(toFirestoreModel(creditApplication)).block()

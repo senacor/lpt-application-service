@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 import reactor.core.publisher.Mono
+import java.util.*
 
 @RestController
 @RequestMapping("/api/credit-applications")
@@ -21,23 +22,23 @@ class CreditApplicationsController(
     var logger: Logger = getLogger(CreditApplicationsController::class.java)
 
     @PostMapping
-    fun evaluateCreditApplication(@RequestBody request: CreditApplicationRequest): Mono<CreditDecision> {
-        return customerMasterDataClient.selectCustomerById("12983719")
-            .map {
-                // TODO: put fancy credit application evaluation logic here...
-                CreditDecision(CreditDecisionType.APPROVED)
-            }
-            .flatMap { creditDecision ->
+    fun evaluateCreditApplication(@RequestBody request: CreditApplicationRequest) =
+        Mono.zip(Mono.just(
+            // TODO: put fancy credit application evaluation logic here...
+            CreditDecision(CreditDecisionType.APPROVED)
+        ), customerMasterDataClient.selectCustomerById("12983719"))
+            .map { creditDecisionCustomerTuple ->
                 // TODO: add a proper application/domain layer instead of just talking to a repo
-                val creditApplication = request.toDomain()
-                    .copy(creditDecision = creditDecision.decision)
-
-                creditApplicationRepository.save(toFirestoreModel(creditApplication))
-                    .map { creditDecision }
+                request.toDomain().copy(creditDecision = creditDecisionCustomerTuple.t1.decision)
+            }.flatMap { domainModel ->
+                creditApplicationRepository.save(toFirestoreModel(domainModel))
+            }.map { savedCreditApplication ->
+                CreditApplicationResponse(
+                    savedCreditApplication.creditDecision!!, savedCreditApplication.id!!
+                )
             }
-    }
 
-    @PostMapping("/{id}/accept")
+    @PostMapping("/{id}")
     fun acceptCreditApplication(@PathVariable id: String) {
         // TODO: accept credit and create credit agreement
     }
