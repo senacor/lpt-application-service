@@ -1,0 +1,14 @@
+apiVersion: cert-manager.io/v1
+kind: Issuer
+metadata:
+  name: letsencrypt-prod
+spec:
+  acme:
+    server: https://acme-v02.api.letsencrypt.org/directory
+    email: mariusz.gorski@senacor.com
+    privateKeySecretRef:
+      name: letsencrypt-prod-tls
+    solvers:
+    - http01:
+        ingress:
+          name: creditapplication-ingress
