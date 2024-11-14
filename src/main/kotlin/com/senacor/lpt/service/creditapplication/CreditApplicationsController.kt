@@ -33,15 +33,12 @@ class CreditApplicationsController(
             .map { creditDecisionCustomerTuple ->
                 // TODO: add a proper application/domain layer instead of just talking to a repo
                 logger.info("Selected credit decision and customer")
-                println("Selected credit decision and customer")
                 request.toDomain().copy(creditDecision = creditDecisionCustomerTuple.t1.decision)
             }.flatMap { domainModel ->
                 logger.info("Saving credit decision to database")
-                println("Saving credit decision to database")
                 creditApplicationRepository.save(toFirestoreModel(domainModel))
             }.map { savedCreditApplication ->
                 logger.info("Received new credit decision request with id {}", savedCreditApplication.id)
-                println(String.format("Received new credit decision request with id %s", savedCreditApplication.id))
                 CreditApplicationResponse(
                     savedCreditApplication.creditDecision!!, savedCreditApplication.id!!
                 )
