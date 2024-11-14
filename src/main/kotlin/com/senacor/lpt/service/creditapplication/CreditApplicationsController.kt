@@ -13,6 +13,7 @@ import reactor.core.publisher.Mono
 import java.util.*
 
 @RestController
+@CrossOrigin(origins = "*")
 @RequestMapping("/api/credit-applications")
 class CreditApplicationsController(
     private val customerMasterDataClient: CustomerMasterDataClient,
