@@ -33,7 +33,8 @@ class CreditApplicationFirestoreTemplateIntegrationTest {
             "Arbeiter",
             BigDecimal("3000.00"),
             BigDecimal("2500.00"),
-            CreditDecisionType.PENDING
+            CreditDecisionType.PENDING,
+            accepted = false
         )
 
         firestoreTemplate.save(toFirestoreModel(creditApplication)).block()

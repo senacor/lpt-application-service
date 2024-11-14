@@ -21,6 +21,7 @@ class CreditApplicationRequest(
         occupation = occupation,
         monthlyNetIncome = monthlyNetIncome,
         monthlyExpenses = monthlyExpenses,
-        creditDecision = CreditDecisionType.PENDING
+        creditDecision = CreditDecisionType.PENDING,
+        accepted = false
     )
 }

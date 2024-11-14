@@ -31,7 +31,8 @@ class CreditApplicationRepositoryIntegrationTest {
             "Arbeiter",
             BigDecimal("3000.00"),
             BigDecimal("2500.00"),
-            CreditDecisionType.PENDING
+            CreditDecisionType.PENDING,
+            accepted = false
         )
 
         repository.save(toFirestoreModel(creditApplication)).block()
