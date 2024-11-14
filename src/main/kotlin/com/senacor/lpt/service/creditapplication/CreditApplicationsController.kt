@@ -51,7 +51,7 @@ class CreditApplicationsController(
             .map { fromFirestoreModel(it) }
             .map {
                 logger.info("Accepting credit application with id {}", it.id)
-                it.copy(accepted = true)
+                it.accept()
             }.map { toFirestoreModel(it) }
             .flatMap {
                 logger.info("Saving credit decision with id {} to database", it.id)

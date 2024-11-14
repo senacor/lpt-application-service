@@ -19,7 +19,10 @@ data class CreditApplication(
     val monthlyExpenses: BigDecimal,
     val creditDecision: CreditDecisionType,
     val accepted: Boolean,
-)
+) {
+    fun accept() = also { check(!accepted) { "Credit application already accepted" } }
+        .let { copy(accepted = true) }
+}
 
 fun toFirestoreModel(value: CreditApplication) =
     CreditApplicationFirestoreModel(
