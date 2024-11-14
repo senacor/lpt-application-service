@@ -9,10 +9,12 @@ import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
+import org.springframework.web.bind.annotation.CrossOrigin
 import reactor.core.publisher.Mono
 import java.util.*
 
 @RestController
+@CrossOrigin(origins = ["*"])
 @RequestMapping("/api/credit-applications")
 class CreditApplicationsController(
     private val customerMasterDataClient: CustomerMasterDataClient,
