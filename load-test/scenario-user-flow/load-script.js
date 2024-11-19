@@ -16,7 +16,7 @@ export const options = {
 };
 
 export default function () {
-    const creditApplicationCreation = http.post('http://creditapplication-service.lpt.svc.cluster.local:8080/api/credit-application', {
+    const creditApplicationCreation = http.post('http://creditapplication-service.lpt.svc.cluster.local:8080/api/credit-applications', {
         "creditAmount":10000.00,
         "firstName":"Harry",
         "lastName":"Potter",
@@ -29,6 +29,6 @@ export default function () {
     const applicationId = creditApplicationCreation.body.id;
     // after receiving the credit decision, the customer decides within 5 seconds to accept or decline the credit application
     sleep(5);
-    const creditApplicationAcceptance = http.post(`http://creditapplication-service.lpt.svc.cluster.local:8080/api/credit-application/${applicationId}`, {});
+    const creditApplicationAcceptance = http.post(`http://creditapplication-service.lpt.svc.cluster.local:8080/api/credit-applications/${applicationId}`, {});
     creditApplicationAcceptanceRate.add(creditApplicationAcceptance.status !== 200);
 }
