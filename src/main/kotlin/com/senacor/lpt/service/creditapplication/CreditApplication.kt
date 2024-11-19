@@ -18,7 +18,11 @@ data class CreditApplication(
     val monthlyNetIncome: BigDecimal,
     val monthlyExpenses: BigDecimal,
     val creditDecision: CreditDecisionType,
-)
+    val accepted: Boolean,
+) {
+    fun accept() = also { check(!accepted) { "Credit application already accepted" } }
+        .let { copy(accepted = true) }
+}
 
 fun toFirestoreModel(value: CreditApplication) =
     CreditApplicationFirestoreModel(
@@ -30,7 +34,8 @@ fun toFirestoreModel(value: CreditApplication) =
         occupation = value.occupation,
         monthlyNetIncomeInCents = toCents(value.monthlyNetIncome),
         monthlyExpensesInCents = toCents(value.monthlyExpenses),
-        creditDecision = value.creditDecision
+        creditDecision = value.creditDecision,
+        accepted = value.accepted,
     )
 
 fun fromFirestoreModel(value: CreditApplicationFirestoreModel) =
@@ -43,7 +48,8 @@ fun fromFirestoreModel(value: CreditApplicationFirestoreModel) =
         occupation = value.occupation!!,
         monthlyNetIncome = fromCents(value.monthlyNetIncomeInCents!!),
         monthlyExpenses = fromCents(value.monthlyExpensesInCents!!),
-        creditDecision = value.creditDecision!!
+        creditDecision = value.creditDecision!!,
+        accepted = value.accepted!!
     )
 
 private fun toCents(value: BigDecimal) = value.times(BigDecimal(100)).toLong()

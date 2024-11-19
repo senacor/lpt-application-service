@@ -17,4 +17,5 @@ class CreditApplicationFirestoreModel(
     var monthlyNetIncomeInCents: Long? = null,
     var monthlyExpensesInCents: Long? = null,
     var creditDecision: CreditDecisionType? = null,
+    var accepted: Boolean? = null,
 )
