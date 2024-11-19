@@ -44,7 +44,7 @@ class CreditApplicationsController(
                 )
             }
 
-    @PostMapping("/{id}/acceptance")
+    @PostMapping("/{id}")
     @ResponseStatus(HttpStatus.ACCEPTED)
     fun acceptCreditApplication(@PathVariable id: String) =
         creditApplicationRepository.findById(id)
