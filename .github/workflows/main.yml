@@ -3,8 +3,8 @@ name: Build and deploy to dev environment
 on:
   workflow_dispatch:
   push:
-#    branches:
-#      - main
+    branches:
+      - main
 
 env:
   IMAGE_APPLICATION_BUILD_NAME: lpt-application
