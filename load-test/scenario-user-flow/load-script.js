@@ -2,15 +2,15 @@ import http from 'k6/http';
 import { Rate } from 'k6/metrics';
 import { sleep } from 'k6';
 
-const creditApplicationCreationRate = new Rate('failed credit application creation');
-const creditApplicationAcceptanceRate = new Rate('failed credit application acceptance');
+const creditApplicationCreationRate = new Rate('failed_credit_application_creation');
+const creditApplicationAcceptanceRate = new Rate('failed_credit_application_acceptance');
 
 export const options = {
     vus: 10,
     duration: '30s',
     thresholds: {
-        'failed credit application creation': ['rate<0.1'],
-        'failed credit application acceptance': ['rate<0.1'],
+        'failed_credit_application_creation': ['rate<0.1'],
+        'failed_credit_application_acceptance': ['rate<0.1'],
         'http_req_duration': ['p(95)<400'],
     },
 };
