@@ -27,6 +27,7 @@ dependencies {
 	implementation("com.google.cloud:spring-cloud-gcp-starter-data-firestore")
 	implementation("com.google.cloud:spring-cloud-gcp-data-firestore")
 	implementation("com.google.cloud:spring-cloud-gcp-autoconfigure")
+	implementation("io.micrometer:micrometer-registry-prometheus")
 
 	implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
 	implementation("org.jetbrains.kotlin:kotlin-reflect")

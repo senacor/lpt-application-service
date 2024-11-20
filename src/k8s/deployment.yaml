@@ -13,6 +13,7 @@ spec:
     metadata:
       labels:
         app: creditapplication-service
+        monitoring: spring
     spec:
       serviceAccountName: creditapplication-service-sa
       containers:

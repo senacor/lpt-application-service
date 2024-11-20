@@ -10,6 +10,7 @@ resources:
   - ingress.yaml
   - serviceaccount.yaml
   - backend-config.yaml
+  - spring.serviceMonitor.yaml
 
 images:
   - name: europe-west1-docker.pkg.dev/vbdev-436712/lpt/creditapplication-service
