@@ -5,11 +5,6 @@
   },
   "response": {
     "status": 200,
-    "delayDistribution": {
-      "type": "lognormal",
-      "median": 80,
-      "sigma": 0.4
-    },
     "bodyFileName":"responses/luke_response.json",
     "headers":{
       "Content-Type":"application/json"
