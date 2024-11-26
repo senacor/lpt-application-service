@@ -29,10 +29,10 @@ spec:
             - "--verbose"
           resources:
             requests:
-              cpu: 100m
+              cpu: 500m
               memory: "128Mi"
             limits:
-              cpu: 100m
+              cpu: 500m
               memory: "128Mi"
           readinessProbe:
             httpGet:
